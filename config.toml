@@ -1,0 +1,31 @@
+concurrent=50
+
+[[runners]]
+    name = "shell"
+    url = "https://gitlab.com/"
+    token = "<<token_default>>"
+    executor = "docker"
+
+    [runners.feature_flags]
+        FF_NETWORK_PER_BUILD = true
+
+    [runners.docker]
+        image = "alpine:3.17"
+
+[[runners]]
+    name = "docker"
+    url = "https://gitlab.com/"
+    token = "<<token_docker>>"
+    executor = "docker"
+    environment = ["DOCKER_HOST=tcp://docker-service:2375"]
+
+    [runners.feature_flags]
+        FF_NETWORK_PER_BUILD = true
+
+    [runners.docker]
+    image = "docker:cli"
+    runtime = "sysbox-runc"
+    [[runners.docker.services]]
+        alias = "docker-service"
+        name = "docker:stable-dind"
+        entrypoint = ["dockerd", "--host=tcp://0.0.0.0:2375"]
